@@ -1,0 +1,22 @@
+{
+  "dependencies": {
+    "ts-node": "^10.4.0",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.5.2"
+  },
+  "name": "advent2021",
+  "version": "1.0.0",
+  "main": "day1.js",
+  "devDependencies": {
+    "@types/node": "^16.11.11"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tsc": "tsc",
+    "dev": "ts-node-dev day2Balt.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

@@ -3,11 +3,8 @@ import fs from 'fs';
 const data: string = fs.readFileSync('input.txt', 'utf8');
 const bits: string[] = data.split('\n');
 
-
 const countBits =(bits: string[]) => {
   let bitCount = [...bits[0]].map(bit => 0);
-
-  console.log(bitCount);
 
   bits.forEach(bit => {
     for (let i = 0; i < bit.length; i++) {
@@ -18,8 +15,6 @@ const countBits =(bits: string[]) => {
       }
     }
   })
-
-  console.log(bitCount);
 
   const epsilonRateBinary = bitCount.map(bit => bit > 0 ? 1 : 0).join('');
   const gammaRateBinary = bitCount.map(bit => bit > 0 ? 0 : 1).join('');

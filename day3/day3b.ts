@@ -19,8 +19,10 @@ const getRating = (bits: string[], bitToKeep: string, bitToDiscard: string): num
   let index = 0;
 
   while (filteredBits.length > 1) {
-    let bitCount = [...bits[0]].map(bit => 0);
+    // an array of 0's the length of the binary number input
+    let bitCount = [...bits[0]].map(_ => 0);
   
+    // adds 1 for each 1, subtracts for each 0
     filteredBits.forEach(bit => {
       for (let i = 0; i < bit.length; i++) {
         if (bit[i] === '0') {
@@ -31,6 +33,7 @@ const getRating = (bits: string[], bitToKeep: string, bitToDiscard: string): num
       }
     })
   
+    // if num is greater than 0, there are more 1s, otherwise there are more 0s
     if (bitCount[index] >= 0) {
       filteredBits = filteredBits.filter(binary => binary[index] === bitToKeep);
     } else {
@@ -50,4 +53,4 @@ const getRatings = (bits: string[]) => {
   return oxygenGeneratorRating * c02ScrubberRating;
 }
 
-console.log(getRatings(bits))
+console.log(getRatings(bits));

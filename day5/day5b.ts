@@ -105,11 +105,12 @@ const showLines = (diagram: string[][], segments: number[][][]) => {
           if (currentY < endY) {
             if (currentX < endX) {
               currentX += 1;
-              currentY += 1;
             } else {
               currentX -= 1;
-              currentY += 1;
             }
+
+            currentY += 1;
+
           }
         }
       });

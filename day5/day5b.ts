@@ -41,10 +41,10 @@ const getMaxXAndMaxY = (segments: number[][][]): [number, number] => {
         maxY = seg[1];
       } 
     });
-  })
+  });
 
   return [maxX, maxY];
-}
+};
 
 const createDiagram = (maxes: [number, number]): string[][] => {
   const [ maxX, maxY ] = maxes;
@@ -55,11 +55,11 @@ const createDiagram = (maxes: [number, number]): string[][] => {
   }
 
   return diagram;
-}
+};
 
 const getInBetweenNumbers = (start: number, end: number): number[] => {
-  let sortedNums = [start, end].sort((a, b) => a - b);
-  let nums = [sortedNums[0]];
+  const sortedNums = [start, end].sort((a, b) => a - b);
+  const nums = [sortedNums[0]];
 
   for (let i = sortedNums[0] + 1; i < sortedNums[1]; i++) {
     nums.push(i);
@@ -68,7 +68,7 @@ const getInBetweenNumbers = (start: number, end: number): number[] => {
   nums.push(sortedNums[1]);
 
   return nums;
-}
+};
 
 const showLines = (diagram: string[][], segments: number[][][]) => {
   segments.forEach(segment => {
@@ -83,15 +83,15 @@ const showLines = (diagram: string[][], segments: number[][][]) => {
           if (indexesToChange.includes(index)) { 
             changeRow(row, columnIndex);
           }
-        })
+        });
 
       } else if (startY === endY) { // change in one column
         const indexesToChange = getInBetweenNumbers(startX, endX);
-        let row = diagram[startY];
+        const row = diagram[startY];
 
         indexesToChange.forEach(index => {
           changeRow(row, index);
-        })
+        });
 
         diagram[startY] = row;
       }
@@ -113,14 +113,12 @@ const showLines = (diagram: string[][], segments: number[][][]) => {
             }
           }
         }
-
-
-      })
+      });
     }
-  })
+  });
 
   return diagram;
-}
+};
 
 const changeRow = (row: string[], index: number) => {
   if (row[index] === '.') { // pass ref to row, index
@@ -128,32 +126,32 @@ const changeRow = (row: string[], index: number) => {
   } else if (/\d/.test(row[index])) {
     row[index] = `${Number(row[index]) + 1}`;
   }
-}
+};
 
 const isDiagonal = (segment: number[][]): boolean => {
   if (segment[0][0] === segment[1][0]) return false;
   if (segment[0][1] === segment[1][1]) return false;
   return true;
-}
+};
 
 const orderSegmentByYAxis = (segment: number[][]) => {
-  return [...segment].sort((a, b) => a[1] - b[1])
-}
+  return [...segment].sort((a, b) => a[1] - b[1]);
+};
 
 const diagramToString = () => {
   return diagram.map(arr => arr.join(''));
-}
+};
 
 const getOverlap = () => {
-  let nums = diagram.flat().filter(char => /[2-9]/.test(char));
+  const nums = diagram.flat().filter(char => /[2-9]/.test(char));
   return nums.length;
-}
+};
 
 const maxes = getMaxXAndMaxY(segments);
 const diagram = createDiagram(maxes);
 showLines(diagram, segments);
-let stringResult = diagramToString().join('\n');
+const stringResult = diagramToString().join('\n');
 
-let overlap = getOverlap();
+const overlap = getOverlap();
 console.log(stringResult);
 console.log(overlap);

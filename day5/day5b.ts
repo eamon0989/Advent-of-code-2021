@@ -24,7 +24,6 @@ count the amount of 2's or higher in the diagram
 import fs from 'fs';
 
 const data: string = fs.readFileSync('input.txt', 'utf-8');
-// type segments = [[[startX: number, startY: number],[endX: number, endY: number]]]
 const segments = data.split('\n')
                   .map(str => str.split(' -> '))
                   .map(arr => [arr[0].split(',').map(Number), arr[1].split(',').map(Number)]);
@@ -153,5 +152,4 @@ showLines(diagram, segments);
 const stringResult = diagramToString().join('\n');
 
 const overlap = getOverlap();
-console.log(stringResult);
 console.log(overlap);

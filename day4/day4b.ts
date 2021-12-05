@@ -38,7 +38,8 @@ const divided: string[] = data.split(/^\s*$/gm);
 const [ numbersString, ...boards ] = divided;
 const numbers = numbersString.split(',');
 
-let numbersUntilBingo: any = {}
+type numsUntilBingo = {[key: string]: [number, string[][], number]};
+let numbersUntilBingo: numsUntilBingo = {}
 
 // checks how many numbers it takes for each board to get to bingo
 const countNumbersUntilBingo = (boards: string[]) => {
@@ -74,7 +75,7 @@ const countNumbersUntilBingo = (boards: string[]) => {
   })
 }
 
-const getLosingBoard = (numbersUntilBingo: string[]): string | undefined => {
+const getLosingBoard = (numbersUntilBingo: numsUntilBingo): string | undefined => {
   let lowestNum = 0;
   let losingBoard;
 
@@ -91,13 +92,13 @@ const getLosingBoard = (numbersUntilBingo: string[]): string | undefined => {
 const getScoreOfLosingBoard = (losingBoard: string | undefined): number | false => {
   if (!losingBoard) return false;
 
-  let array: [][] = numbersUntilBingo[losingBoard][1];
+  let array: string[][] = numbersUntilBingo[losingBoard][1];
   let finalNum = numbersUntilBingo[losingBoard][2];
   let sum = 0;
   
   array.forEach(line => {
     line.forEach(num => {
-      if (!isNaN(num)) {
+      if (!isNaN(+num)) {
         sum += Number(num);
       }
     })

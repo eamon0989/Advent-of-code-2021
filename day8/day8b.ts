@@ -49,18 +49,21 @@ const input = fs.readFileSync('input.txt', 'utf-8')
                 .map(arr => [arr[0], arr[1]])
                 .map(arr => [arr[0].trim().split(' '), arr[1].trim().split(' ')]);;
 
+interface Num {[key: number]: string};
+interface Count {[key: string]: number};
+let total = 0;
+
 const countChars = (array: string[]) => {
-  interface Count {[key: string]: number}
   return array.join('').split('').reduce((obj: Count, char: string) => {
   obj[char] ? obj[char] += 1 : obj[char] = 1;
     return obj;
   }, {});
 }
 
-const getThree = (fiveChars: string[]) => {
-  const charCount = countChars(fiveChars);
+const getThree = (fiveCharNums: string[]) => {
+  const charCount = countChars(fiveCharNums);
 
-  let three = fiveChars.filter(string => {
+  let three = fiveCharNums.filter(string => {
     return string.split('').every(char => {
       return charCount[char] > 1;
     })
@@ -69,19 +72,8 @@ const getThree = (fiveChars: string[]) => {
   return three[0];
 }
 
-const getNine = (sixChars: string[], four: string, three: string): string => {
-  const nineChars = Array.from(new Set([...four, ...three]));
-
-  const nine = sixChars.filter(string => {
-    const regex = new RegExp(`[${nineChars.join('')}]{6}`, 'g');
-    return regex.test(string);
-  })
-
-  return nine[0];
-}
-
-const getTwo = (fiveChars: string[], e: string): string => {
-  const two = fiveChars.filter(string => {
+const getTwo = (fiveCharNums: string[], e: string): string => {
+  const two = fiveCharNums.filter(string => {
     const regex = new RegExp(`${e}`, 'g');
     return regex.test(string);
   })
@@ -89,38 +81,61 @@ const getTwo = (fiveChars: string[], e: string): string => {
   return two[0];
 }
 
-const getFive = (fiveChars: string[], three: string, two: string): string => {
-  const five = fiveChars.filter(num => {
-    return num !== three && num !== two;
+// given 2 numbers, return the remaining number
+const returnThirdOption = (arrayOfNumbers: string[], num1: string, num2: string): string => {
+  const num3 = arrayOfNumbers.filter(num => {
+    return num !== num1 && num !== num2;
   });
 
-  return five[0];
+  return num3[0];
 }
 
-const getZero = (sixChars: string[], nine: string, six: string): string => {
-  return sixChars.filter(num => {
-    return num !== nine && num !== six;
-  })[0];
-}
+// return the match from the 6 char nums - 9, 6, 0
+const getNumberFrom6Chars = (sixCharNums: string[], num1: string, num2: string) => {
+  const uniqueChars = Array.from(new Set([...num1, num2]));
 
-const getSix = (sixChars: string[], five: string, e: string) => {
-  const uniqueSixChars = Array.from(new Set([...five, e]));
-
-  const six = sixChars.filter(string => {
-    const regex = new RegExp(`[${uniqueSixChars.join('')}]{6}`, 'g');
+  const num3 = sixCharNums.filter(string => {
+    const regex = new RegExp(`[${uniqueChars.join('')}]{6}`, 'g');
     return regex.test(string);
   })
 
-  return six[0];
+  return num3[0];
 }
 
-let total = 0;
+// e is the least used letter, the bottom left side
+const getE = (signals: string[]): string => {
+  const charCount = countChars(signals);
+  
+  let e = '';
+  for (let char in charCount) {
+    if (charCount[char] === 4) {
+      return char;
+    }
+  }
+
+  return e;
+}
+
+// adds value of each line to final total
+const getTotal = (values: string[], numbers: Num) => {
+  let inputNums: string[] = [];
+
+  values.forEach(value => {
+    for (let num in numbers) {
+      const regex = new RegExp(`\\b[${value}]{` + value.length + `}\\b`, 'g');
+      if (regex.test(numbers[num])) {
+        inputNums.push(num);
+      }
+    }
+  })
+
+  total += Number(inputNums.join(''));
+}
 
 const getNumbers = () => {
   input.forEach(line => {
     const [ signals, values ] = line;
 
-    interface Num {[key: number]: string}
     let numbers: Num = {
       0: '',
       1: '',
@@ -133,17 +148,10 @@ const getNumbers = () => {
       8: '',
       9: ''
     }
-    const charCount = countChars(signals);
-    let e = '';
 
-    for (let char in charCount) {
-      if (charCount[char] === 4) {
-        e = char;
-      }
-    }
-
-    let fiveChars: string[] = [];
-    let sixChars: string[] = [];
+    const e = getE(signals);
+    let fiveCharNums: string[] = [];
+    let sixCharNums: string[] = [];
 
     signals.forEach((signal, index) => {
       if (/\b\w{2}\b/.test(signal)) {
@@ -155,35 +163,22 @@ const getNumbers = () => {
       } else if (/\b\w{7}\b/.test(signal)) {
         numbers[8] = signal;
       } else if (/\b\w{5}\b/.test(signal)) {
-        fiveChars.push(signal);
+        fiveCharNums.push(signal);
       } else if (/\b\w{6}\b/.test(signal)) {
-        sixChars.push(signal);
+        sixCharNums.push(signal);
       }
     })
 
-    numbers[3] = getThree(fiveChars);
-    numbers[9] = getNine(sixChars, numbers[4], numbers[3]);
-    numbers[2] = getTwo(fiveChars, e);
-    numbers[5] = getFive(fiveChars, numbers[3], numbers[2]);
-    numbers[6] = getSix(sixChars, numbers[5], e);
-    numbers[0] = getZero(sixChars, numbers[9], numbers[6]);
+    numbers[3] = getThree(fiveCharNums);
+    numbers[9] = getNumberFrom6Chars(sixCharNums, numbers[4], numbers[3]);
+    numbers[2] = getTwo(fiveCharNums, e);
+    numbers[5] = returnThirdOption(fiveCharNums, numbers[3], numbers[2]);
+    numbers[6] = getNumberFrom6Chars(sixCharNums, numbers[5], e);
+    numbers[0] = returnThirdOption(sixCharNums, numbers[9], numbers[6]);
 
-    let inputNums: string[] = [];
-
-    values.forEach(value => {
-      for (let num in numbers) {
-        const regex = new RegExp(`\\b[${value}]{` + value.length + `}\\b`, 'g');
-        if (regex.test(numbers[num])) {
-          inputNums.push(num);
-        }
-      }
-    })
-
-    total += Number(inputNums.join(''));
+    getTotal(values, numbers);
   })
-
 }
 
 getNumbers();
-
 console.log(total);
